@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafio Nutricional</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8fafc; padding: 20px; text-align: center; }
+    .game-box { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .score { font-size: 20px; font-weight: bold; color: #2563eb; margin-bottom: 20px; }
+    .foods { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+    .food {
+      padding: 10px 15px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; cursor: grab; font-weight: bold;
+    }
+    .basket {
+      border: 3px dashed #16a34a; background-color: #f0fdf4; padding: 30px; border-radius: 12px; min-height: 100px;
+    }
+    .basket p { color: #166534; font-weight: bold; margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="game-box">
+    <h2>🍎 Desafio Nutricional</h2>
+    <div class="score">Pontuação: <span id="score">0</span></div>
+
+    <div class="foods" id="food-list">
+      <div class="food" draggable="true" id="maca" data-healthy="true">🍎 Maçã</div>
+      <div class="food" draggable="true" id="hamburguer" data-healthy="false">🍔 Hambúrguer</div>
+      <div class="food" draggable="true" id="banana" data-healthy="true">🍌 Banana</div>
+      <div class="food" draggable="true" id="refrigerante" data-healthy="false">🥤 Refrigerante</div>
+    </div>
+
+    <div class="basket" id="basket">
+      <p>📥 Solte apenas frutas e vegetais aqui!</p>
+    </div>
+  </div>
+
+  <script>
+    let score = 0;
+    const scoreDisplay = document.getElementById('score');
+    const foods = document.querySelectorAll('.food');
+    const basket = document.getElementById('basket');
+
+    foods.forEach(food => {
+      food.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', food.id);
+      });
+    });
+
+    basket.addEventListener('dragover', (e) => e.preventDefault());
+
+    basket.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const foodId = e.dataTransfer.getData('text/plain');
+      const food = document.getElementById(foodId);
+
+      if (!food) return;
+
+      const isHealthy = food.getAttribute('data-healthy') === 'true';
+
+      if (isHealthy) {
+        score += 10;
+        basket.appendChild(food);
+      } else {
+        score -= 10;
+      }
+
+      scoreDisplay.textContent = score;
+    });
+  </script>
+</body>
+</html>
